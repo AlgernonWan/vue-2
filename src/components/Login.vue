@@ -65,19 +65,18 @@ export default {
         // form框自己验证
         if (!valid) return this.$message.error('验证失败')
         // 跳转到新的页面
-        const {
-          data: ref
-        } = await this.$http.post('login/', this.loginForm).catch(
-          () => {
-            this.loginStatus = false
-            return this.$message.error('登录失败')
+        const ref = await this.$http.post('login/', this.loginForm).catch(
+          (err) => {
+            // console.log(err.response)
+            return this.$message.error(err.response.status + err.response.data.detail)
           }
         )
+        // console.log(ref)
         if (ref.status === 200) {
           // console.log(ref)
           this.$message.success('登录成功')
-          window.sessionStorage.setItem('token', ref.access)
-          this.$router.push('/home')
+          window.sessionStorage.setItem('token', ref.data.access)
+          return this.$router.push('/home')
         }
       })
       // this.$refs.loginFormRef.validate(

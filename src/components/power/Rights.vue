@@ -44,37 +44,47 @@ export default {
     this.getRightsList()
   },
   methods: {
-    getRightsList() {
-      this.rightsList = [{
-        name: '商品管理',
-        path: 'haha',
-        level: '0',
-        pid: 1
-      }, {
-        name: '用户管理',
-        path: 'user',
-        level: '0',
-        pid: 2
-      }, {
-        name: '用户列表',
-        path: 'user',
-        level: '1',
-        pid: 3
-      }, {
-        name: '添加用户',
-        path: 'user',
-        level: '2',
-        pid: 4
-      }]
+    async getRightsList() {
+      // this.rightsList = [{
+      //   name: '商品管理',
+      //   path: 'haha',
+      //   level: '0',
+      //   pid: 1
+      // }, {
+      //   name: '用户管理',
+      //   path: 'user',
+      //   level: '0',
+      //   pid: 2
+      // }, {
+      //   name: '用户列表',
+      //   path: 'user',
+      //   level: '1',
+      //   pid: 3
+      // }, {
+      //   name: '添加用户',
+      //   path: 'user',
+      //   level: '2',
+      //   pid: 4
+      // }]
+      const {
+        data: ref
+      } = await this.$http.get('users/test/').catch(
+        err => {
+          // console.log(err.response)
+          this.$message.error(err.response.status + ': ' + err.response.data.detail)
+        }
+      )
+      this.rightsList = ref.data
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-.el-card{
+.el-card {
   margin-top: 15px;
 }
+
 .el-table {
   margin-top: 15px;
   font-size: 13px;
