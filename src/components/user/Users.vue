@@ -47,7 +47,7 @@
             <el-button type="danger" icon="el-icon-delete" size="mini"
                        @click="removeUserById(scope.row.name)"></el-button>
             <el-tooltip class="item" effect="dark" content="分配角色" placement="top-start" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+              <el-button type="warning" icon="el-icon-setting" size="mini" @click="setRole(scope.row)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -112,6 +112,25 @@
         <el-button type="primary" @click="editUser">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title="分配角色"
+      :visible.sync="setRoleDialogVisible"
+      width="30%"
+      @close="setRoleDialogClosed">
+      <span>{{ userInfo.name }}</span>
+      <el-select v-model="selectRoleId" placeholder="请选择">
+        <el-option
+          v-for="item in rolesList"
+          :key="item.id"
+          :label="item.rollName"
+          :value="item.id">
+        </el-option>
+      </el-select>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="setRoleDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -154,19 +173,19 @@ export default {
         },
         {
           role: '员工',
-          name: '王小虎',
+          name: '王大虎',
           email: '上海市普陀区金沙江路 1517 弄',
           mg_state: false
         },
         {
           role: '员工',
-          name: '王小虎',
+          name: '王一虎',
           email: '上海市普陀区金沙江路 1519 弄',
           mg_state: false
         },
         {
           role: '员工',
-          name: '王小虎',
+          name: '王二虎',
           email: '上海市普陀区金沙江路 1516 弄',
           mg_state: true
         }],
@@ -232,7 +251,59 @@ export default {
             validator: checkMobile, trigger: 'blur'
           }]
       },
-      editFormRef: {}
+      editFormRef: {},
+      setRoleDialogVisible: false,
+      userInfo: {},
+      // 所有的角色列表
+      rolesList: [
+        {
+          id: 30,
+          rollName: '主管',
+          roleDesc: '技术负责人',
+          children: [
+            {
+              id: 101,
+              authName: '商品管理',
+              path: null,
+              children: [{
+                id: 105,
+                authName: '商品列表',
+                path: null,
+                children: [{
+                  id: 115,
+                  authName: '添加商品',
+                  path: null
+                }]
+              }, {
+                id: 106,
+                authName: '商品列表',
+                path: null,
+                children: [{
+                  id: 116,
+                  authName: '添加商品',
+                  path: null
+                }]
+              }]
+            },
+            {
+              id: 201,
+              authName: '用户管理',
+              path: 'users',
+              children: [{
+                id: 205,
+                authName: '用户列表',
+                path: 'users',
+                children: [{
+                  id: 215,
+                  authName: '添加用户',
+                  path: null
+                }]
+              }]
+            }]
+        }
+      ],
+      // 已选中的角色ID
+      selectRoleId: ''
     }
   },
   methods: {
@@ -304,6 +375,21 @@ export default {
       } else {
         console.log('已经删除了用户')
       }
+    },
+    setRole(userInfo) {
+      this.setRoleDialogVisible = true
+      this.userInfo = userInfo
+    },
+    saveRoleInfo() {
+      if (!this.selectRoleId) {
+        return this.$message.error('请选择要分配的角色!')
+      }
+      console.log(this.selectRoleId)
+      this.setRoleDialogVisible = false
+    },
+    setRoleDialogClosed() {
+      this.selectRoleId = ''
+      this.userInfo = {}
     }
   }
 }

@@ -5,7 +5,7 @@
         <img src="../assets/logo.png" alt=""/>
         <span>后台管理</span>
       </div>
-      <el-button type="info">退出</el-button>
+      <el-button type="info" @click="logout">退出</el-button>
     </el-header>
     <el-container>
       <el-aside :width="isCollapse ? '64px' : '200px'">
@@ -30,12 +30,18 @@
           <el-submenu index="2">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>一级菜单</span>
+              <span>权限管理</span>
             </template>
-            <el-menu-item :index="'/' + 'haha'" @click="saveNavState('/' + 'haha')">
+            <el-menu-item :index="'/' + 'rights'" @click="saveNavState('/' + 'rights')">
               <template>
                 <i class="el-icon-location"></i>
-                <span>二级菜单</span>
+                <span>权限列表</span>
+              </template>
+            </el-menu-item>
+            <el-menu-item :index="'/' + 'roles'" @click="saveNavState('/' + 'roles')">
+              <template>
+                <i class="el-icon-location"></i>
+                <span>角色列表</span>
               </template>
             </el-menu-item>
           </el-submenu>
@@ -57,6 +63,10 @@ export default {
     }
   },
   methods: {
+    logout() {
+      window.sessionStorage.clear()
+      this.$router.push('/login')
+    },
     // 点击按钮, 切换菜单折叠/展开
     toggleCollapse() {
       this.isCollapse = !this.isCollapse

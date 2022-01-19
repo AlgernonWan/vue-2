@@ -29,8 +29,8 @@ export default {
   data() {
     return {
       loginForm: {
-        username: 'username',
-        password: 'password'
+        username: 'leo',
+        password: 'leo'
       },
       // 表单的验证规则
       loginFormRules: {
@@ -47,7 +47,7 @@ export default {
             required: true, message: '请输入密码', trigger: 'blur'
           },
           {
-            min: 8, max: 16, message: '长度在 8 到 16 个字符', trigger: 'blur'
+            min: 3, max: 16, message: '长度在 8 到 16 个字符', trigger: 'blur'
           }
         ]
       }
@@ -59,13 +59,34 @@ export default {
       this.$refs.loginFormRef.resetFields()
     },
     login() {
-      this.$refs.loginFormRef.validate((valid) => {
+      this.$refs.loginFormRef.validate(async valid => {
+        // 返回true/false
         // console.log(valid)
         // form框自己验证
         if (!valid) return this.$message.error('验证失败')
         // 跳转到新的页面
-        this.$router.push('/home')
+        const {
+          data: ref
+        } = await this.$http.post('login/', this.loginForm).catch(
+          () => {
+            this.loginStatus = false
+            return this.$message.error('登录失败')
+          }
+        )
+        if (ref.status === 200) {
+          // console.log(ref)
+          this.$message.success('登录成功')
+          window.sessionStorage.setItem('token', ref.access)
+          this.$router.push('/home')
+        }
       })
+      // this.$refs.loginFormRef.validate(
+      //   function (valid) {
+      //     console.log(valid)
+      //     const res = this.$http.post('login/', this.loginForm)
+      //     console.log(res)
+      //   }
+      // )
     }
   }
 }
